@@ -15,6 +15,7 @@ from torchsummary import summary
 
 # custom imports
 from utils import train, test, optimizers, dataloader
+from models import VisionTransformer
 
 
 def main(
@@ -28,9 +29,10 @@ def main(
     ret_polt_values,
     trainloader,
     testloader,
+    model,
 ):
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    net = model()
+    net = model
     net = net.to(device)
     if device == "cuda":
         net = torch.nn.DataParallel(net)
@@ -88,6 +90,7 @@ save_weights = True
 ret_polt_values = True
 criterion = nn.CrossEntropyLoss()
 trainloader, testloader = dataloader.dataloader()
+model = VisionTransformer.vit_model1()
 
 # execute main
 if __name__ == "__main__":
@@ -102,4 +105,5 @@ if __name__ == "__main__":
         ret_polt_values,
         trainloader,
         testloader,
+        model,
     )
