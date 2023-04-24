@@ -4,6 +4,7 @@ import torchvision
 from pytorch_pretrained_vit import ViT
 
 
+##TODO: change model head to take input a smaller size
 # vit_b_16
 def vit_model1():
     model = torchvision.models.vit_b_16(

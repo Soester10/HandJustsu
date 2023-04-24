@@ -35,6 +35,9 @@ def main(
     trainloader,
     testloader,
     model,
+    train_mul,
+    batch_size,
+    optimal_batch_size=32,
 ):
     device = "cuda" if torch.cuda.is_available() else "cpu"
     net = model
@@ -51,11 +54,27 @@ def main(
     optimizer = optimizers.choose_optimizer(optimizer_, net, lr, momentum, weight_decay)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=200)
 
+    if train_mul:
+        batch_multiplier = batch_size // optimal_batch_size
+
     for epoch in range(epochs):
         print(f"Running Epoch {epoch}...")
-        train_acc, train_loss, best_train_acc = train.train(
-            epoch, optimizer, net, best_train_acc, criterion, trainloader, device
-        )
+
+        if train_mul:
+            train_acc, train_loss, best_train_acc = train.train_mul(
+                epoch,
+                optimizer,
+                net,
+                best_train_acc,
+                criterion,
+                trainloader,
+                device,
+                batch_multiplier,
+            )
+        else:
+            train_acc, train_loss, best_train_acc = train.train(
+                epoch, optimizer, net, best_train_acc, criterion, trainloader, device
+            )
         test_acc, test_loss, best_acc = test.test(
             epoch, optimizer, net, best_acc, criterion, testloader, device, save_weights
         )
@@ -86,7 +105,9 @@ def main(
 
 
 # define hyperparameters
-batch_size = 32
+batch_size = 256
+optimal_batch_size = 32
+train_mul = True
 optimizer_ = "adam"
 epochs = 5
 lr = 0.1
@@ -112,4 +133,7 @@ if __name__ == "__main__":
         trainloader,
         testloader,
         model,
+        train_mul,
+        batch_size,
+        optimal_batch_size,
     )
