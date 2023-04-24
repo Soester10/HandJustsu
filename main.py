@@ -1,3 +1,4 @@
+#Lib imports
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -11,6 +12,9 @@ import os
 import argparse
 
 from torchsummary import summary
+
+#custom imports
+from utils import train, test, optimizers
 
 
 def main(
@@ -35,15 +39,15 @@ def main(
     train_accs = []
     test_accs = []
 
-    optimizer = optim_func(optimizer_, net, lr, momentum, weight_decay)
+    optimizer = optimizers.choose_optimizer(optimizer_, net, lr, momentum, weight_decay)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=200)
 
     for epoch in range(epochs):
         print(f"Running Epoch {epoch}...")
-        train_acc, train_loss, best_train_acc = train(
+        train_acc, train_loss, best_train_acc = train.train(
             epoch, optimizer, net, best_train_acc, criterion, trainloader, device
         )
-        test_acc, test_loss, best_acc = test(
+        test_acc, test_loss, best_acc = test.test(
             epoch, optimizer, net, best_acc, criterion, testloader, device, save_weights
         )
         scheduler.step()
