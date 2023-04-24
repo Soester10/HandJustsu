@@ -19,6 +19,7 @@ def train(epoch, optimizer, net, best_train_acc, criterion, trainloader, device)
         _, predicted = outputs.max(1)
         total += targets.size(0)
         correct += predicted.eq(targets).sum().item()
+        print("train:", train_loss / (batch_idx + 1), correct / total, end="\r")
 
     if best_train_acc < 100.0 * correct / total:
         best_train_acc = 100.0 * correct / total
@@ -40,6 +41,7 @@ def train_mul(
     train_loss = 0
     correct = 0
     total = 0
+    count = 0
 
     for batch_idx, (inputs, targets) in tqdm(enumerate(trainloader)):
         inputs, targets = inputs.to(device), targets.to(device)
@@ -54,11 +56,13 @@ def train_mul(
         loss = criterion(outputs, targets)
         loss.backward()
 
-        train_loss += loss.item() / batch_multiplier
+        count -= 1
+
+        train_loss += loss.item()
         _, predicted = outputs.max(1)
         total += targets.size(0)
         correct += predicted.eq(targets).sum().item()
-        print(train_loss / (batch_idx + 1), correct / total, end="\r")
+        print("train_mul:", train_loss / (batch_idx + 1), correct / total, end="\r")
 
     if best_train_acc < 100.0 * correct / total:
         best_train_acc = 100.0 * correct / total

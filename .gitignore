@@ -163,5 +163,6 @@ cython_debug/
 ##mac issue
 .DS_Store
 
-##ignore data
+##ignore data, checkpoint
 data
+checkpoint

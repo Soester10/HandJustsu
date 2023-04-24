@@ -108,7 +108,7 @@ def main(
 batch_size = 256
 optimal_batch_size = 32
 train_mul = True
-optimizer_ = "adam"
+optimizer_ = "adadelta"
 epochs = 5
 lr = 0.1
 momentum = 0.9
@@ -116,7 +116,9 @@ weight_decay = 5e-4
 save_weights = True
 ret_polt_values = True
 criterion = nn.CrossEntropyLoss()
-trainloader, testloader = dataloader.dataloader(batch_size)
+trainloader, testloader = dataloader.dataloader(
+    optimal_batch_size if train_mul else batch_size
+)
 model = VisionTransformer.vit_model1()
 
 # execute main
