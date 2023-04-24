@@ -7,6 +7,7 @@ def test(epoch, optimizer, net, best_acc, criterion, testloader, device, save_we
     test_loss = 0
     correct = 0
     total = 0
+
     with torch.no_grad():
         for batch_idx, (inputs, targets) in enumerate(testloader):
             inputs, targets = inputs.to(device), targets.to(device)

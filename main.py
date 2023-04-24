@@ -1,4 +1,4 @@
-#Lib imports
+# Lib imports
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -13,8 +13,8 @@ import argparse
 
 from torchsummary import summary
 
-#custom imports
-from utils import train, test, optimizers
+# custom imports
+from utils import train, test, optimizers, dataloader
 
 
 def main(
@@ -26,6 +26,8 @@ def main(
     weight_decay,
     save_weights,
     ret_polt_values,
+    trainloader,
+    testloader,
 ):
     device = "cuda" if torch.cuda.is_available() else "cpu"
     net = model()
@@ -85,6 +87,7 @@ weight_decay = 5e-4
 save_weights = True
 ret_polt_values = True
 criterion = nn.CrossEntropyLoss()
+trainloader, testloader = dataloader.dataloader()
 
 # execute main
 if __name__ == "__main__":
@@ -97,4 +100,6 @@ if __name__ == "__main__":
         weight_decay,
         save_weights,
         ret_polt_values,
+        trainloader,
+        testloader,
     )
