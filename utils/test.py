@@ -1,5 +1,6 @@
 import torch
 import os
+from tqdm import tqdm
 
 
 def test(epoch, optimizer, net, best_acc, criterion, testloader, device, save_weights):
@@ -9,7 +10,7 @@ def test(epoch, optimizer, net, best_acc, criterion, testloader, device, save_we
     total = 0
 
     with torch.no_grad():
-        for batch_idx, (inputs, targets) in enumerate(testloader):
+        for batch_idx, (inputs, targets) in tqdm(enumerate(testloader)):
             inputs, targets = inputs.to(device), targets.to(device)
             outputs = net(inputs)
             loss = criterion(outputs, targets)

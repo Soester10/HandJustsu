@@ -1,10 +1,12 @@
+from tqdm import tqdm
+
 def train(epoch, optimizer, net, best_train_acc, criterion, trainloader, device):
     net.train()
     train_loss = 0
     correct = 0
     total = 0
 
-    for batch_idx, (inputs, targets) in enumerate(trainloader):
+    for batch_idx, (inputs, targets) in tqdm(enumerate(trainloader)):
         inputs, targets = inputs.to(device), targets.to(device)
         optimizer.zero_grad()
         outputs = net(inputs)

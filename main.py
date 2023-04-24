@@ -85,15 +85,16 @@ def main(
 
 
 # define hyperparameters
+batch_size = 32
 optimizer_ = "adam"
-epochs = 20
+epochs = 5
 lr = 0.1
 momentum = 0.9
 weight_decay = 5e-4
 save_weights = True
 ret_polt_values = True
 criterion = nn.CrossEntropyLoss()
-trainloader, testloader = dataloader.dataloader()
+trainloader, testloader = dataloader.dataloader(batch_size)
 model = VisionTransformer.vit_model1()
 
 # execute main
