@@ -1,5 +1,6 @@
 from tqdm import tqdm
 
+
 def train(epoch, optimizer, net, best_train_acc, criterion, trainloader, device):
     net.train()
     train_loss = 0
