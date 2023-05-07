@@ -2,7 +2,7 @@ import json
 import os
 import cv2
 
-PROCESSED_FRAMES_PATH = '../processed_frames_dataset/'
+PROCESSED_FRAMES_PATH = '../../processed_frames_dataset/'
 
 
 if not os.path.exists(PROCESSED_FRAMES_PATH):
@@ -10,7 +10,7 @@ if not os.path.exists(PROCESSED_FRAMES_PATH):
 
 missing_videos = set()
 
-with open("../wlasl_dataset/missing.txt", "r") as f:
+with open("../../wlasl_dataset/missing.txt", "r") as f:
     missing_videos_list = f.readlines()
     for id in missing_videos_list:
         missing_videos.add(id.strip())
@@ -18,7 +18,7 @@ with open("../wlasl_dataset/missing.txt", "r") as f:
 annotations_file = open(f"{PROCESSED_FRAMES_PATH}annotations.txt", "a")
 
 
-with open('../wlasl_dataset/WLASL_v0.3.json') as json_file:
+with open('../../wlasl_dataset/WLASL_v0.3.json') as json_file:
     data = json.load(json_file)
     label_id = 0
     for term in data:

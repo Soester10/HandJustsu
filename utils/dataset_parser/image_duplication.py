@@ -3,7 +3,7 @@ import shutil
 
 # process all folders that have under 40 images to double the image count (doubling the frame rate)
 
-path = "/../processed_frames_dataset"
+path = "/../../processed_frames_dataset"
 dir = os.getcwd() + path
 count = 0
 
