@@ -8,8 +8,6 @@ PROCESSED_FRAMES_PATH = '../processed_frames_dataset/'
 if not os.path.exists(PROCESSED_FRAMES_PATH):
     os.makedirs(PROCESSED_FRAMES_PATH)
 
-# TODO multithreading for processing all of them
-
 missing_videos = set()
 
 with open("../wlasl_dataset/missing.txt", "r") as f:
@@ -44,7 +42,7 @@ with open('../wlasl_dataset/WLASL_v0.3.json') as json_file:
                 end_frame = video["frame_end"] if video["frame_end"] > 0 else 100000
                 frameIndex = 1
                 index = 1
-                print(f'Processing {word} {video_id}')
+                print(f'Processing {label_id} {word} {video_id}')
                 while success:
                     if start_frame <= frameIndex <= end_frame:
                         # save frame as JPEG file
@@ -53,7 +51,7 @@ with open('../wlasl_dataset/WLASL_v0.3.json') as json_file:
                         index += 1
                     success, image = vidcap.read()
                     frameIndex += 1
-                print(f"{word}/{video_id} 1 {index - 1} {label_id}")
+                # print(f"{word}/{video_id} 1 {index - 1} {label_id}")
                 annotations_file.write(
                     f"{word}/{video_id} 1 {index - 1} {label_id}\n")
         label_id += 1
