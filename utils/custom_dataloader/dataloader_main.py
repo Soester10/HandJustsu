@@ -1,4 +1,4 @@
-from custom_dataloader import VideoFrameDataset, ImglistToTensor
+from .custom_dataloader import VideoFrameDataset, ImglistToTensor
 from torchvision import transforms
 import torch
 import matplotlib.pyplot as plt
@@ -13,10 +13,12 @@ Ignore this function and look at "main" below.
 
 def plot_video(rows, cols, frame_list, plot_width, plot_height, title: str):
     fig = plt.figure(figsize=(plot_width, plot_height))
-    grid = ImageGrid(fig, 111,  # similar to subplot(111)
-                     nrows_ncols=(rows, cols),  # creates 2x2 grid of axes
-                     axes_pad=0.3,  # pad between axes in inch.
-                     )
+    grid = ImageGrid(
+        fig,
+        111,  # similar to subplot(111)
+        nrows_ncols=(rows, cols),  # creates 2x2 grid of axes
+        axes_pad=0.3,  # pad between axes in inch.
+    )
 
     for index, (ax, im) in enumerate(zip(grid, frame_list)):
         # Iterating over the grid returns the Axes.
@@ -24,10 +26,10 @@ def plot_video(rows, cols, frame_list, plot_width, plot_height, title: str):
         ax.set_title(index)
     plt.suptitle(title)
     plt.show()
-    fig.savefig('hello.png')
+    fig.savefig("hello.png")
 
 
-if __name__ == '__main__':
+def get_custom_loader(batch_size, load_saved_pth):
     """
     This demo uses the dummy dataset inside of the folder "demo_dataset".
     It is structured just like a real dataset would need to be structured.
@@ -40,9 +42,22 @@ if __name__ == '__main__':
     5. Demo of using a dataset where samples have multiple separate class labels
 
     """
-    videos_root = f'{os.getcwd()}/../../processed_frames_dataset'
+    # videos_root = f'{os.getcwd()}/../../processed_frames_dataset'
     # os.path.join(videos_root, 'annotations.txt')
-    annotation_file = f'{os.getcwd()}/../../processed_frames_dataset/annotations.txt'
+    # annotation_file = f'{os.getcwd()}/../../processed_frames_dataset/annotations.txt'
+
+    if load_saved_pth:
+        try:
+            return torch.load("data/HandJutsu.pth")
+        except:
+            pass
+
+    # Folder format:
+    # base_dir = data
+    # data/annotations.txt
+    # data/<word: hello, books, etc.>/<id>/<frames>
+    videos_root = "data"
+    annotation_file = "data/annotations.txt"
 
     """ DEMO 1 WITHOUT IMAGE TRANSFORMS """
     dataset = VideoFrameDataset(
@@ -50,17 +65,25 @@ if __name__ == '__main__':
         annotationfile_path=annotation_file,
         num_segments=40,
         frames_per_segment=1,
-        imagefile_template='img_{:03d}.jpg',
+        imagefile_template="img_{:03d}.jpg",
         transform=ImglistToTensor(),
-        test_mode=True
+        test_mode=True,
     )
 
-    torch.save(dataset, "../HandJutsu.pth")
+    torch.save(dataset, "data/HandJutsu.pth")
 
-    data_loader = DataLoader(dataset, batch_size=16,
-                             shuffle=True, num_workers=1)
+    ##TODO: split dataloader into train and test
+    # train_size = int(0.8 * len(dataset))
+    # test_size = len(dataset) - train_size
+    # train_dataset, test_dataset = torch.utils.data.random_split(dataset, [train_size, test_size])
 
-    print(dataset)
+    data_loader = DataLoader(
+        dataset, batch_size=batch_size, shuffle=True, num_workers=1
+    )
+
+    return data_loader
+
+    # print(dataset)
     # import random
     # sample = dataset[random.randint(0, 1)]
     # frames = sample[0]  # list of PIL images

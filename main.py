@@ -10,17 +10,22 @@ import torchvision.transforms as transforms
 
 import os
 import argparse
+import sys
 
 from torchsummary import summary
 
 # custom imports
 from utils import train, test, optimizers, dataloader
+from utils.custom_dataloader import custom_dataloader, dataloader_main
 from models import VisionTransformer
 
 ##to resolve 'ssl certificate verify failed' issue
 import ssl
 
 ssl._create_default_https_context = ssl._create_unverified_context
+
+##to resolve " No module named 'custom_dataloader' "
+sys.path.append("utils/custom_dataloader")
 
 
 def main(
@@ -75,9 +80,10 @@ def main(
             train_acc, train_loss, best_train_acc = train.train(
                 epoch, optimizer, net, best_train_acc, criterion, trainloader, device
             )
-        test_acc, test_loss, best_acc = test.test(
-            epoch, optimizer, net, best_acc, criterion, testloader, device, save_weights
-        )
+        ##TODO: fix later
+        # test_acc, test_loss, best_acc = test.test(
+        #     epoch, optimizer, net, best_acc, criterion, testloader, device, save_weights
+        # )
         scheduler.step()
 
         print(
@@ -105,9 +111,9 @@ def main(
 
 
 # define hyperparameters
-batch_size = 256
+batch_size = 16
 optimal_batch_size = 32
-train_mul = True
+train_mul = False
 optimizer_ = "adadelta"
 epochs = 5
 lr = 0.1
@@ -120,6 +126,9 @@ trainloader, testloader = dataloader.dataloader(
     optimal_batch_size if train_mul else batch_size
 )
 model = VisionTransformer.vit_model1()
+
+##Test
+trainloader = dataloader_main.get_custom_loader(batch_size, load_saved_pth=False)
 
 # execute main
 if __name__ == "__main__":
