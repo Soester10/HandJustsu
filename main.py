@@ -136,9 +136,9 @@ def main(
 
 
 # define hyperparameters
-batch_size = 8
+batch_size = 32
 optimal_batch_size = 8
-train_mul = False
+train_mul = True
 optimizer_ = "adadelta"
 epochs = 100
 lr = 0.1
@@ -151,10 +151,17 @@ criterion = nn.CrossEntropyLoss()
 # trainloader, testloader = dataloader.dataloader(
 #     optimal_batch_size if train_mul else batch_size
 # )
-model = VisionTransformer.vivit_model1()
+model = VisionTransformer.vivit_model1(
+    image_size=200,
+    frames=40,
+    num_classes=2000,
+)
 
 ## For WLASL
-trainloader, testloader = dataloader_main.get_custom_loader(batch_size)
+trainloader, testloader = dataloader_main.get_custom_loader(
+    optimal_batch_size if train_mul else batch_size,
+    annotations_file="annotations200.txt",
+)
 print(len(trainloader), len(testloader))
 
 load_from_ckpt = True

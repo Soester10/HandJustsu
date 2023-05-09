@@ -29,7 +29,7 @@ def plot_video(rows, cols, frame_list, plot_width, plot_height, title: str):
     fig.savefig("hello.png")
 
 
-def get_custom_loader(batch_size):
+def get_custom_loader(batch_size, annotations_file="annotations200.txt"):
     """
     This demo uses the dummy dataset inside of the folder "demo_dataset".
     It is structured just like a real dataset would need to be structured.
@@ -51,7 +51,7 @@ def get_custom_loader(batch_size):
     # data/annotations.txt
     # data/<word: hello, books, etc.>/<id>/<frames>
     videos_root = "data"
-    annotation_file = "data/annotations200.txt"
+    annotation_file = "data/{annotations_file}"
 
     """ DEMO 1 WITHOUT IMAGE TRANSFORMS """
     dataset = VideoFrameDataset(
