@@ -42,7 +42,8 @@ def main(
     model,
     train_mul,
     batch_size,
-    optimal_batch_size=32,
+    optimal_batch_size=8,
+    load_from_ckpt=False,
 ):
     device = "cuda" if torch.cuda.is_available() else "cpu"
     net = model
@@ -51,10 +52,19 @@ def main(
         net = torch.nn.DataParallel(net)
         cudnn.benchmark = True
 
+    start_epoch = 0
     best_train_acc = 0
     best_acc = 0
     train_accs = []
     test_accs = []
+
+    if load_from_ckpt:
+        checkpoint = torch.load("checkpoint/ckpt.pth")
+        net.load_state_dict(checkpoint["net"])
+        best_acc = checkpoint["best_acc"]
+        start_epoch = checkpoint["epoch"]
+        train_accs = checkpoint["train_accs"]
+        test_accs = checkpoint["test_accs"]
 
     optimizer = optimizers.choose_optimizer(optimizer_, net, lr, momentum, weight_decay)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=200)
@@ -62,7 +72,7 @@ def main(
     if train_mul:
         batch_multiplier = batch_size // optimal_batch_size
 
-    for epoch in range(epochs):
+    for epoch in range(start_epoch, start_epoch + epochs):
         print(f"Running Epoch {epoch}...")
 
         if train_mul:
@@ -80,10 +90,11 @@ def main(
             train_acc, train_loss, best_train_acc = train.train(
                 epoch, optimizer, net, best_train_acc, criterion, trainloader, device
             )
-        ##TODO: fix later
-        # test_acc, test_loss, best_acc = test.test(
-        #     epoch, optimizer, net, best_acc, criterion, testloader, device, save_weights
-        # )
+
+        test_acc, test_loss, best_acc = test.test(
+            epoch, optimizer, net, best_acc, criterion, testloader, device
+        )
+
         scheduler.step()
 
         print(
@@ -93,38 +104,41 @@ def main(
             "Acc:",
             format(train_acc, ".03f"),
         )
-        # print(
-        #     "Test==>",
-        #     "Loss:",
-        #     format(test_loss, ".03f"),
-        #     "Acc:",
-        #     format(test_acc, ".03f"),
-        # )
+        print(
+            "Test==>",
+            "Loss:",
+            format(test_loss, ".03f"),
+            "Acc:",
+            format(test_acc, ".03f"),
+        )
 
         train_accs.append(train_acc)
-        # test_accs.append(test_acc)
+        test_accs.append(test_acc)
 
-        if (epoch + 1) % 10 == 0 and best_acc <= train_acc:
+        if (epoch + 1) % 10 == 0 and best_acc <= test_acc and save_weights:
+            print("Saving Weights...")
             state = {
                 "net": net.state_dict(),
-                "acc": train_acc,
+                "best_acc": best_acc,
                 "epoch": epoch,
+                "train_accs": train_accs,
+                "test_accs": test_accs,
             }
             if not os.path.isdir("checkpoint"):
                 os.mkdir("checkpoint")
             torch.save(state, "checkpoint/ckpt.pth")
-            best_acc = max(best_acc, train_acc)
+            best_acc = max(best_acc, test_acc)
 
-    print("\n\nBest accuracy:", best_acc)
+    print("\n\nBest Test Accuracy:", best_acc)
 
     if ret_polt_values:
         return train_accs, test_accs
 
 
 # define hyperparameters
-batch_size = 8
-optimal_batch_size = 32
-train_mul = False
+batch_size = 32
+optimal_batch_size = 8
+train_mul = True
 optimizer_ = "adadelta"
 epochs = 100
 lr = 0.1
@@ -133,17 +147,24 @@ weight_decay = 5e-4
 save_weights = True
 ret_polt_values = True
 criterion = nn.CrossEntropyLoss()
+## For CIFAR10
 # trainloader, testloader = dataloader.dataloader(
 #     optimal_batch_size if train_mul else batch_size
 # )
-model = VisionTransformer.vivit_model1()
+model = VisionTransformer.vivit_model1(
+    image_size=200,
+    frames=40,
+    num_classes=2000,
+)
 
-##Test
-trainloader = dataloader_main.get_custom_loader(batch_size, load_saved_pth=False)
-print(len(trainloader))
+## For WLASL
+trainloader, testloader = dataloader_main.get_custom_loader(
+    optimal_batch_size if train_mul else batch_size,
+    annotations_file="annotations200.txt",
+)
+print(len(trainloader), len(testloader))
 
-
-testloader = None
+load_from_ckpt = True
 
 # execute main
 if __name__ == "__main__":
@@ -162,4 +183,5 @@ if __name__ == "__main__":
         train_mul,
         batch_size,
         optimal_batch_size,
+        load_from_ckpt,
     )

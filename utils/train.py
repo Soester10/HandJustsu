@@ -45,6 +45,7 @@ def train_mul(
     count = 0
 
     for batch_idx, (inputs, targets) in tqdm(enumerate(trainloader)):
+        inputs = inputs.permute(0, 2, 1, 3, 4)
         inputs, targets = inputs.to(device), targets.to(device)
 
         # gradiend descent
@@ -65,7 +66,7 @@ def train_mul(
         correct += predicted.eq(targets).sum().item()
         print("train_mul:", train_loss / (batch_idx + 1), correct / total, end="\r")
 
-    if best_train_acc < 100.0 * correct / total:
-        best_train_acc = 100.0 * correct / total
+    acc = 100.0 * correct / total
+    best_train_acc = max(best_train_acc, acc)
 
-    return 100.0 * correct / total, train_loss / (batch_idx + 1), best_train_acc
+    return acc, train_loss / (batch_idx + 1), best_train_acc

@@ -3,7 +3,7 @@ import os
 from tqdm import tqdm
 
 
-def test(epoch, optimizer, net, best_acc, criterion, testloader, device, save_weights):
+def test(epoch, optimizer, net, best_acc, criterion, testloader, device):
     net.eval()
     test_loss = 0
     correct = 0
@@ -11,6 +11,7 @@ def test(epoch, optimizer, net, best_acc, criterion, testloader, device, save_we
 
     with torch.no_grad():
         for batch_idx, (inputs, targets) in tqdm(enumerate(testloader)):
+            inputs = inputs.permute(0, 2, 1, 3, 4)
             inputs, targets = inputs.to(device), targets.to(device)
             outputs = net(inputs)
             loss = criterion(outputs, targets)
@@ -19,21 +20,8 @@ def test(epoch, optimizer, net, best_acc, criterion, testloader, device, save_we
             _, predicted = outputs.max(1)
             total += targets.size(0)
             correct += predicted.eq(targets).sum().item()
+            print("test:", test_loss / (batch_idx + 1), correct / total, end="\r")
 
-    # Save checkpoint.
     acc = 100.0 * correct / total
-    if acc > best_acc:
-        if save_weights:
-            print("Saving..")
-            state = {
-                "net": net.state_dict(),
-                "acc": acc,
-                "epoch": epoch,
-            }
-            if not os.path.isdir("checkpoint"):
-                os.mkdir("checkpoint")
-            torch.save(state, "./checkpoint/ckpt.pth")
 
-        best_acc = acc
-
-    return 100.0 * correct / total, test_loss / (batch_idx + 1), best_acc
+    return acc, test_loss / (batch_idx + 1), best_acc
