@@ -20,20 +20,6 @@ def test(epoch, optimizer, net, best_acc, criterion, testloader, device, save_we
             total += targets.size(0)
             correct += predicted.eq(targets).sum().item()
 
-    # Save checkpoint.
     acc = 100.0 * correct / total
-    # if acc > best_acc:
-    #     if save_weights:
-    #         print("Saving..")
-    #         state = {
-    #             "net": net.state_dict(),
-    #             "acc": acc,
-    #             "epoch": epoch,
-    #         }
-    #         if not os.path.isdir("checkpoint"):
-    #             os.mkdir("checkpoint")
-    #         torch.save(state, "./checkpoint/ckpt.pth")
 
-    #     best_acc = acc
-
-    return 100.0 * correct / total, test_loss / (batch_idx + 1), best_acc
+    return acc, test_loss / (batch_idx + 1), best_acc

@@ -42,7 +42,8 @@ def main(
     model,
     train_mul,
     batch_size,
-    optimal_batch_size=32,
+    optimal_batch_size=8,
+    load_from_ckpt = False,
 ):
     device = "cuda" if torch.cuda.is_available() else "cpu"
     net = model
@@ -51,10 +52,19 @@ def main(
         net = torch.nn.DataParallel(net)
         cudnn.benchmark = True
 
+    start_epoch = 0
     best_train_acc = 0
     best_acc = 0
     train_accs = []
     test_accs = []
+
+    if load_from_ckpt:
+        checkpoint = torch.load('checkpoint/ckpt.pth')
+        net.load_state_dict(checkpoint['net'])
+        best_acc = checkpoint['acc']
+        start_epoch = checkpoint['epoch']
+        train_accs = train_accs
+        test_accs = test_accs
 
     optimizer = optimizers.choose_optimizer(optimizer_, net, lr, momentum, weight_decay)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=200)
@@ -62,7 +72,7 @@ def main(
     if train_mul:
         batch_multiplier = batch_size // optimal_batch_size
 
-    for epoch in range(epochs):
+    for epoch in range(start_epoch, start_epoch + epochs):
         print(f"Running Epoch {epoch}...")
 
         if train_mul:
@@ -109,7 +119,7 @@ def main(
             print("Saving Weights...")
             state = {
                 "net": net.state_dict(),
-                "acc": train_acc,
+                "best_acc": best_acc,
                 "epoch": epoch,
                 "train_accs": train_accs,
                 "test_accs": test_accs,
@@ -117,7 +127,7 @@ def main(
             if not os.path.isdir("checkpoint"):
                 os.mkdir("checkpoint")
             torch.save(state, "checkpoint/ckpt.pth")
-            best_acc = test_acc
+            best_acc = max(best_acc, test_acc)
 
     print("\n\nBest Test Accuracy:", best_acc)
 
@@ -127,7 +137,7 @@ def main(
 
 # define hyperparameters
 batch_size = 8
-optimal_batch_size = 32
+optimal_batch_size = 8
 train_mul = False
 optimizer_ = "adadelta"
 epochs = 100
@@ -137,14 +147,17 @@ weight_decay = 5e-4
 save_weights = True
 ret_polt_values = True
 criterion = nn.CrossEntropyLoss()
+## For CIFAR10
 # trainloader, testloader = dataloader.dataloader(
 #     optimal_batch_size if train_mul else batch_size
 # )
 model = VisionTransformer.vivit_model1()
 
-##Test
+## For WLASL
 trainloader, testloader = dataloader_main.get_custom_loader(batch_size, load_saved_pth=False)
 print(len(trainloader), len(testloader))
+
+load_from_ckpt = True
 
 # execute main
 if __name__ == "__main__":
@@ -163,4 +176,5 @@ if __name__ == "__main__":
         train_mul,
         batch_size,
         optimal_batch_size,
+        load_from_ckpt,
     )
