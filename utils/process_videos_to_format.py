@@ -20,7 +20,7 @@ def generate_annotations(file_name, label_json_path, output_folder):
             video_id = video.split(".")[0]
             video_path = os.path.join(output_folder, word, video_id)
             annotations.append(
-                f"{word}/{video_id} 1 {len(os.listdir(video_path))} {word_to_labels[word]}\n"
+                f"{word}/{video_id} 1 {len(os.listdir(video_path))-1} {word_to_labels[word]}\n"
             )
     output_file = open(os.path.join(output_folder, f"{file_name}.txt"), "w+")
     output_file.writelines(annotations)
@@ -65,7 +65,7 @@ def convert_known_videos_to_frames(data_folder: str = "sample_test_data"):
     MIN_FRAMES = 40
 
     words = os.listdir(data_folder)
-    create_folder(output_folder) 
+    create_folder(output_folder)
     # iterate through every word
     for word in words:
         # create folder for word
