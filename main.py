@@ -15,7 +15,7 @@ import sys
 from torchsummary import summary
 
 # custom imports
-from utils import train, test, optimizers, dataloader
+from utils import train, test, optimizers, dataloader, custom_test
 from utils.custom_dataloader import custom_dataloader, dataloader_main
 from models import VisionTransformer
 
@@ -135,6 +135,24 @@ def main(
         return train_accs, test_accs
 
 
+def custom_tester(input_):
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    net = model
+    net = net.to(device)
+    if device == "cuda":
+        net = torch.nn.DataParallel(net)
+        cudnn.benchmark = True
+
+    try:
+        checkpoint = torch.load("checkpoint/ckpt.pth")
+    except:
+        print("Checkpoint not Found!")
+        return
+    net.load_state_dict(checkpoint["net"])
+
+    class_ = custom_test.test(net, input_, device)
+
+
 # define hyperparameters
 batch_size = 32
 optimal_batch_size = 8
@@ -166,8 +184,16 @@ print(len(trainloader), len(testloader))
 
 load_from_ckpt = True
 
+
+## Custom Test
+custom_test_ = True
+input_ = "sample_test_data/adult/01206.mp4"  # path to video
+
 # execute main
 if __name__ == "__main__":
+    if custom_test:
+        custom_tester(input_)
+        sys.exit(0)
     main(
         criterion,
         optimizer_,

@@ -19,7 +19,8 @@ def log(statement):
 
 def generate_annotations(file_name):
     word_to_labels = json.load(
-        open(os.path.join(label_json_path, 'word_to_label.json'), "r"))
+        open(os.path.join(label_json_path, "word_to_label.json"), "r")
+    )
     annotations = []
     for word in os.listdir(output_folder):
         if word.endswith(".txt"):
@@ -28,8 +29,9 @@ def generate_annotations(file_name):
             video_id = video.split(".")[0]
             video_path = os.path.join(output_folder, word, video_id)
             annotations.append(
-                f'{word}/{video_id} 1 {len(os.listdir(video_path))} {word_to_labels[word]}\n')
-    output_file = open(os.path.join(output_folder, f'{file_name}.txt'), "w+")
+                f"{word}/{video_id} 1 {len(os.listdir(video_path))} {word_to_labels[word]}\n"
+            )
+    output_file = open(os.path.join(output_folder, f"{file_name}.txt"), "w+")
     output_file.writelines(annotations)
     output_file.close()
 
@@ -61,8 +63,7 @@ def resize_and_output(word, video, frames, output_size=(200, 200)):
                 "JPEG", quality=90)
 
 
-if __name__ == "__main__":
-
+def convert_videos_to_frames():
     create_folder(output_folder)  # create root output folder
     # iterate through every word
     for word in os.listdir(data_folder):
@@ -70,7 +71,6 @@ if __name__ == "__main__":
         create_folder(os.path.join(output_folder, word))
         # iterate through every video for each word
         for video in os.listdir(os.path.join(data_folder, word)):
-
             log(f"Processing {word}/{video}")
 
             video_id = video.split(".")[0]  # remove extension
