@@ -34,7 +34,7 @@ def test(net, path_to_videos: str, device, known=True):
             _, predicted = output.max(1)
 
             predicted = predicted.item()
-            #TEST
+            # TEST
             target_ = target_.item()
             target_ = classes[str(target_)]
 
