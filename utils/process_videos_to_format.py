@@ -3,21 +3,12 @@ import cv2
 from PIL import Image
 import json
 
-dirname = os.path.dirname(__file__)
-data_folder = os.path.join(dirname, "../sample_test_data")
-output_folder = os.path.join(dirname, "../processed_sample_data")
-label_json_path = os.path.join(dirname, "./labels")
-MIN_FRAMES = 40
-
-ENABLE_LOGS = True
-
 
 def log(statement):
-    if ENABLE_LOGS:
-        print(statement)
+    print(statement)
 
 
-def generate_annotations(file_name):
+def generate_annotations(file_name, label_json_path, output_folder):
     word_to_labels = json.load(
         open(os.path.join(label_json_path, "word_to_label.json"), "r")
     )
@@ -45,7 +36,7 @@ def create_folder(path):
         os.mkdir(path)
 
 
-def get_frames(word, video):
+def get_frames(word, video, data_folder):
     vidcap = cv2.VideoCapture(os.path.join(data_folder, word, video))
     success, image = vidcap.read()
     frames = []
@@ -55,7 +46,7 @@ def get_frames(word, video):
     return frames
 
 
-def resize_and_output(word, video, frames, output_size=(200, 200)):
+def resize_and_output(word, video, frames, output_folder, output_size=(200, 200)):
     for index, image in enumerate(frames):
         im = Image.fromarray(cv2.cvtColor(image, cv2.COLOR_BGR2RGB)).resize(
             output_size, Image.ANTIALIAS)
@@ -64,6 +55,16 @@ def resize_and_output(word, video, frames, output_size=(200, 200)):
 
 
 def convert_videos_to_frames():
+    # dirname = os.path.dirname(__file__)
+    # data_folder = os.path.join(dirname, "../sample_test_data")
+    # output_folder = os.path.join(dirname, "../processed_sample_data")
+    # label_json_path = os.path.join(dirname, "./labels")
+
+    data_folder = "sample_test_data"
+    output_folder = "sample_test_data/processed_data"
+    label_json_path = "./labels"
+    MIN_FRAMES = 40
+
     create_folder(output_folder)  # create root output folder
     # iterate through every word
     for word in os.listdir(data_folder):
@@ -77,13 +78,13 @@ def convert_videos_to_frames():
             # create folder for individual video
             create_folder(os.path.join(output_folder, word, video_id))
             # generate frames
-            frames = get_frames(word, video)
+            frames = get_frames(word, video, data_folder)
             # duplicate frames if you have less than MIN_FRAMES frames
             while len(frames) <= MIN_FRAMES:
                 frames = double_frames(frames)
 
             # save each frame in the folder as a 200x200 image
-            resize_and_output(word, video_id, frames)
+            resize_and_output(word, video_id, frames, output_folder)
 
     # specify file name without extension for annotations
-    generate_annotations("annotations")
+    generate_annotations("annotations", label_json_path, output_folder)
