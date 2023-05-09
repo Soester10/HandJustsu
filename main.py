@@ -43,7 +43,7 @@ def main(
     train_mul,
     batch_size,
     optimal_batch_size=8,
-    load_from_ckpt = False,
+    load_from_ckpt=False,
 ):
     device = "cuda" if torch.cuda.is_available() else "cpu"
     net = model
@@ -59,12 +59,12 @@ def main(
     test_accs = []
 
     if load_from_ckpt:
-        checkpoint = torch.load('checkpoint/ckpt.pth')
-        net.load_state_dict(checkpoint['net'])
-        best_acc = checkpoint['acc']
-        start_epoch = checkpoint['epoch']
-        train_accs = train_accs
-        test_accs = test_accs
+        checkpoint = torch.load("checkpoint/ckpt.pth")
+        net.load_state_dict(checkpoint["net"])
+        best_acc = checkpoint["best_acc"]
+        start_epoch = checkpoint["epoch"]
+        train_accs = checkpoint["train_accs"]
+        test_accs = checkpoint["test_accs"]
 
     optimizer = optimizers.choose_optimizer(optimizer_, net, lr, momentum, weight_decay)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=200)
@@ -94,7 +94,7 @@ def main(
         test_acc, test_loss, best_acc = test.test(
             epoch, optimizer, net, best_acc, criterion, testloader, device
         )
-        
+
         scheduler.step()
 
         print(
@@ -115,7 +115,7 @@ def main(
         train_accs.append(train_acc)
         test_accs.append(test_acc)
 
-        if (epoch + 1) % 10 == 0 and best_acc <= test_acc:
+        if (epoch + 1) % 10 == 0 and best_acc <= test_acc and save_weights:
             print("Saving Weights...")
             state = {
                 "net": net.state_dict(),
@@ -154,7 +154,7 @@ criterion = nn.CrossEntropyLoss()
 model = VisionTransformer.vivit_model1()
 
 ## For WLASL
-trainloader, testloader = dataloader_main.get_custom_loader(batch_size, load_saved_pth=False)
+trainloader, testloader = dataloader_main.get_custom_loader(batch_size)
 print(len(trainloader), len(testloader))
 
 load_from_ckpt = True

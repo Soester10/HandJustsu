@@ -45,6 +45,7 @@ def train_mul(
     count = 0
 
     for batch_idx, (inputs, targets) in tqdm(enumerate(trainloader)):
+        inputs = inputs.permute(0, 2, 1, 3, 4)
         inputs, targets = inputs.to(device), targets.to(device)
 
         # gradiend descent
