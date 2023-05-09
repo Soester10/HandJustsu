@@ -151,7 +151,9 @@ def custom_tester(path_to_videos):
         return
     net.load_state_dict(checkpoint["net"])
 
-    predicted_classes, correct = custom_test.test(net, path_to_videos, device, known=labeled_test)
+    predicted_classes, correct = custom_test.test(
+        net, path_to_videos, device, known=labeled_test
+    )
 
     print(predicted_classes)
     if labeled_test:

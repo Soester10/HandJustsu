@@ -36,17 +36,21 @@ def test(net, path_to_videos: str, device, known=True):
 
             predicted = predicted.item()
             class_ = classes[str(predicted)]
-            
+
             # TEST
             if known:
                 target_ = target_.item()
                 target_ = classes[str(target_)]
 
                 predicted_classes[batch_idx] = (class_, target_)
-                correct = (correct*(batch_idx)+1)/(batch_idx+1) if class_ == target_ else (correct*(batch_idx))/(batch_idx+1)
+                correct = (
+                    (correct * (batch_idx) + 1) / (batch_idx + 1)
+                    if class_ == target_
+                    else (correct * (batch_idx)) / (batch_idx + 1)
+                )
 
             else:
                 ##TODO: change batch_idx to record.path
                 predicted_classes[batch_idx] = class_
 
-    return predicted_classes, correct*100
+    return predicted_classes, correct * 100
