@@ -170,3 +170,4 @@ checkpoint
 # datasets
 wlasl_dataset/
 processed_frames_dataset/
+unprocessed_frames_dataset/
