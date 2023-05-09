@@ -21,11 +21,11 @@ def vit_model2():
 
 def vivit_model1():
     model = ViViT(
-        image_size=128,  # image size
-        frames=16,  # number of frames
-        image_patch_size=16,  # image patch size
+        image_size=200,  # image size
+        frames=40,  # number of frames
+        image_patch_size=20,  # image patch size
         frame_patch_size=2,  # frame patch size
-        num_classes=1000,
+        num_classes=2000,
         dim=1024,
         spatial_depth=6,  # depth of the spatial transformer
         temporal_depth=6,  # depth of the temporal transformer

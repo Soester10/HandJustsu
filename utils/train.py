@@ -8,6 +8,7 @@ def train(epoch, optimizer, net, best_train_acc, criterion, trainloader, device)
     total = 0
 
     for batch_idx, (inputs, targets) in tqdm(enumerate(trainloader)):
+        inputs = inputs.permute(0, 2, 1, 3, 4)
         inputs, targets = inputs.to(device), targets.to(device)
         optimizer.zero_grad()
         outputs = net(inputs)

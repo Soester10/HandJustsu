@@ -10,17 +10,22 @@ import torchvision.transforms as transforms
 
 import os
 import argparse
+import sys
 
 from torchsummary import summary
 
 # custom imports
 from utils import train, test, optimizers, dataloader
+from utils.custom_dataloader import custom_dataloader, dataloader_main
 from models import VisionTransformer
 
 ##to resolve 'ssl certificate verify failed' issue
 import ssl
 
 ssl._create_default_https_context = ssl._create_unverified_context
+
+##to resolve " No module named 'custom_dataloader' "
+sys.path.append("utils/custom_dataloader")
 
 
 def main(
@@ -75,9 +80,10 @@ def main(
             train_acc, train_loss, best_train_acc = train.train(
                 epoch, optimizer, net, best_train_acc, criterion, trainloader, device
             )
-        test_acc, test_loss, best_acc = test.test(
-            epoch, optimizer, net, best_acc, criterion, testloader, device, save_weights
-        )
+        ##TODO: fix later
+        # test_acc, test_loss, best_acc = test.test(
+        #     epoch, optimizer, net, best_acc, criterion, testloader, device, save_weights
+        # )
         scheduler.step()
 
         print(
@@ -87,16 +93,27 @@ def main(
             "Acc:",
             format(train_acc, ".03f"),
         )
-        print(
-            "Test==>",
-            "Loss:",
-            format(test_loss, ".03f"),
-            "Acc:",
-            format(test_acc, ".03f"),
-        )
+        # print(
+        #     "Test==>",
+        #     "Loss:",
+        #     format(test_loss, ".03f"),
+        #     "Acc:",
+        #     format(test_acc, ".03f"),
+        # )
 
         train_accs.append(train_acc)
-        test_accs.append(test_acc)
+        # test_accs.append(test_acc)
+
+        if (epoch + 1) % 10 == 0 and best_acc <= train_acc:
+            state = {
+                "net": net.state_dict(),
+                "acc": train_acc,
+                "epoch": epoch,
+            }
+            if not os.path.isdir("checkpoint"):
+                os.mkdir("checkpoint")
+            torch.save(state, "checkpoint/ckpt.pth")
+            best_acc = max(best_acc, train_acc)
 
     print("\n\nBest accuracy:", best_acc)
 
@@ -105,21 +122,28 @@ def main(
 
 
 # define hyperparameters
-batch_size = 256
+batch_size = 8
 optimal_batch_size = 32
-train_mul = True
+train_mul = False
 optimizer_ = "adadelta"
-epochs = 5
+epochs = 100
 lr = 0.1
 momentum = 0.9
 weight_decay = 5e-4
 save_weights = True
 ret_polt_values = True
 criterion = nn.CrossEntropyLoss()
-trainloader, testloader = dataloader.dataloader(
-    optimal_batch_size if train_mul else batch_size
-)
-model = VisionTransformer.vit_model1()
+# trainloader, testloader = dataloader.dataloader(
+#     optimal_batch_size if train_mul else batch_size
+# )
+model = VisionTransformer.vivit_model1()
+
+##Test
+trainloader = dataloader_main.get_custom_loader(batch_size, load_saved_pth=False)
+print(len(trainloader))
+
+
+testloader = None
 
 # execute main
 if __name__ == "__main__":

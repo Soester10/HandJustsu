@@ -166,3 +166,7 @@ cython_debug/
 ##ignore data, checkpoint
 data
 checkpoint
+
+# datasets
+wlasl_dataset/
+processed_frames_dataset/
