@@ -93,16 +93,27 @@ def main(
             "Acc:",
             format(train_acc, ".03f"),
         )
-        print(
-            "Test==>",
-            "Loss:",
-            format(test_loss, ".03f"),
-            "Acc:",
-            format(test_acc, ".03f"),
-        )
+        # print(
+        #     "Test==>",
+        #     "Loss:",
+        #     format(test_loss, ".03f"),
+        #     "Acc:",
+        #     format(test_acc, ".03f"),
+        # )
 
         train_accs.append(train_acc)
-        test_accs.append(test_acc)
+        # test_accs.append(test_acc)
+
+        if (epoch + 1) % 10 == 0 and best_acc <= train_acc:
+            state = {
+                "net": net.state_dict(),
+                "acc": train_acc,
+                "epoch": epoch,
+            }
+            if not os.path.isdir("checkpoint"):
+                os.mkdir("checkpoint")
+            torch.save(state, "checkpoint/ckpt.pth")
+            best_acc = max(best_acc, train_acc)
 
     print("\n\nBest accuracy:", best_acc)
 
@@ -111,24 +122,28 @@ def main(
 
 
 # define hyperparameters
-batch_size = 16
+batch_size = 8
 optimal_batch_size = 32
 train_mul = False
 optimizer_ = "adadelta"
-epochs = 5
+epochs = 100
 lr = 0.1
 momentum = 0.9
 weight_decay = 5e-4
 save_weights = True
 ret_polt_values = True
 criterion = nn.CrossEntropyLoss()
-trainloader, testloader = dataloader.dataloader(
-    optimal_batch_size if train_mul else batch_size
-)
-model = VisionTransformer.vit_model1()
+# trainloader, testloader = dataloader.dataloader(
+#     optimal_batch_size if train_mul else batch_size
+# )
+model = VisionTransformer.vivit_model1()
 
 ##Test
 trainloader = dataloader_main.get_custom_loader(batch_size, load_saved_pth=False)
+print(len(trainloader))
+
+
+testloader = None
 
 # execute main
 if __name__ == "__main__":

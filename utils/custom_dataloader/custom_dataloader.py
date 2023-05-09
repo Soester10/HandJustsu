@@ -25,9 +25,10 @@ class VideoRecord(object):
 
     def __init__(self, row, root_datapath):
         self._data = row
-        self._path = os.path.join(
-            root_datapath, row[0] if len(self._data) == 4 else (row[0] + " " + row[1])
-        )
+        # self._path = os.path.join(
+        #     root_datapath, row[0] if len(self._data) == 4 else (row[0] + " " + row[1])
+        # )
+        self._path = os.path.join(root_datapath, " ".join(row[:-3]))
 
     @property
     def path(self) -> str:

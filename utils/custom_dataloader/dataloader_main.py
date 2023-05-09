@@ -57,7 +57,7 @@ def get_custom_loader(batch_size, load_saved_pth):
     # data/annotations.txt
     # data/<word: hello, books, etc.>/<id>/<frames>
     videos_root = "data"
-    annotation_file = "data/annotations.txt"
+    annotation_file = "data/annotations200.txt"
 
     """ DEMO 1 WITHOUT IMAGE TRANSFORMS """
     dataset = VideoFrameDataset(
