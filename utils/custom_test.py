@@ -18,8 +18,8 @@ def test(net, path_to_videos: str, device, known=True):
             convert_known_videos_to_frames(path_to_videos)
             custom_testloader = get_custom_loader(
                 batch_size=1,
-                annotations_file=f"{path_to_videos}/annotations.txt",
-                videos_root=path_to_videos,
+                annotations_file="annotations.txt",
+                videos_root=f"{path_to_videos}/../processed_data",
                 get_only_test=True,
             )
 

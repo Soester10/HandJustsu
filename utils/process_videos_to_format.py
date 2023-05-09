@@ -60,12 +60,11 @@ def convert_known_videos_to_frames(data_folder: str = "sample_test_data"):
     # output_folder = os.path.join(dirname, "../processed_sample_data")
     # label_json_path = os.path.join(dirname, "./labels")
 
-    output_folder = f"{data_folder}/processed_data"
+    output_folder = f"{data_folder}/../processed_data"
     label_json_path = "utils/labels"
     MIN_FRAMES = 40
 
-    folders_to_ignore = ['processed_data']
-    words = [folder for folder in os.listdir(data_folder) if folder not in folders_to_ignore]
+    words = os.listdir(data_folder)
     create_folder(output_folder) 
     # iterate through every word
     for word in words:

@@ -189,7 +189,7 @@ load_from_ckpt = True
 
 ## Custom Test
 custom_test_ = True
-path_to_videos = "sample_test_data"  # path to video/s
+path_to_videos = "test_data/sample_test_data"  # path to video/s
 
 # execute main
 if __name__ == "__main__":
