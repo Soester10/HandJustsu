@@ -188,12 +188,12 @@ load_from_ckpt = True
 
 
 ## Custom Test
-custom_test_ = True
+custom_test_ = False
 path_to_videos = "sample_test_data"  # path to video/s
 
 # execute main
 if __name__ == "__main__":
-    if custom_test:
+    if custom_test_:
         custom_tester(path_to_videos)
         sys.exit(0)
     main(

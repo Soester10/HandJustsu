@@ -10,7 +10,7 @@ def test(net, path_to_videos: str, device, known=True):
     net.eval()
 
     predicted_classes = {}
-    classes = open("./labels/label_to_word.json")
+    classes = open("utils/labels/label_to_word.json")
     classes = json.load(classes)
 
     with torch.no_grad():
