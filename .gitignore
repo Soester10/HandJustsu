@@ -26,6 +26,9 @@ share/python-wheels/
 *.egg
 MANIFEST
 
+# vscode settings
+.vscode/
+
 # PyInstaller
 #  Usually these files are written by a python script from a template
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
@@ -171,3 +174,4 @@ checkpoint
 wlasl_dataset/
 processed_frames_dataset/
 unprocessed_frames_dataset/
+processed_frames_dataset.zip
