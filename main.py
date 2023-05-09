@@ -80,10 +80,11 @@ def main(
             train_acc, train_loss, best_train_acc = train.train(
                 epoch, optimizer, net, best_train_acc, criterion, trainloader, device
             )
-        ##TODO: fix later
-        # test_acc, test_loss, best_acc = test.test(
-        #     epoch, optimizer, net, best_acc, criterion, testloader, device, save_weights
-        # )
+
+        test_acc, test_loss, best_acc = test.test(
+            epoch, optimizer, net, best_acc, criterion, testloader, device
+        )
+        
         scheduler.step()
 
         print(
@@ -93,29 +94,32 @@ def main(
             "Acc:",
             format(train_acc, ".03f"),
         )
-        # print(
-        #     "Test==>",
-        #     "Loss:",
-        #     format(test_loss, ".03f"),
-        #     "Acc:",
-        #     format(test_acc, ".03f"),
-        # )
+        print(
+            "Test==>",
+            "Loss:",
+            format(test_loss, ".03f"),
+            "Acc:",
+            format(test_acc, ".03f"),
+        )
 
         train_accs.append(train_acc)
-        # test_accs.append(test_acc)
+        test_accs.append(test_acc)
 
-        if (epoch + 1) % 10 == 0 and best_acc <= train_acc:
+        if (epoch + 1) % 10 == 0 and best_acc <= test_acc:
+            print("Saving Weights...")
             state = {
                 "net": net.state_dict(),
                 "acc": train_acc,
                 "epoch": epoch,
+                "train_accs": train_accs,
+                "test_accs": test_accs,
             }
             if not os.path.isdir("checkpoint"):
                 os.mkdir("checkpoint")
             torch.save(state, "checkpoint/ckpt.pth")
-            best_acc = max(best_acc, train_acc)
+            best_acc = test_acc
 
-    print("\n\nBest accuracy:", best_acc)
+    print("\n\nBest Test Accuracy:", best_acc)
 
     if ret_polt_values:
         return train_accs, test_accs
@@ -139,11 +143,8 @@ criterion = nn.CrossEntropyLoss()
 model = VisionTransformer.vivit_model1()
 
 ##Test
-trainloader = dataloader_main.get_custom_loader(batch_size, load_saved_pth=False)
-print(len(trainloader))
-
-
-testloader = None
+trainloader, testloader = dataloader_main.get_custom_loader(batch_size, load_saved_pth=False)
+print(len(trainloader), len(testloader))
 
 # execute main
 if __name__ == "__main__":

@@ -29,7 +29,7 @@ def plot_video(rows, cols, frame_list, plot_width, plot_height, title: str):
     fig.savefig("hello.png")
 
 
-def get_custom_loader(batch_size, load_saved_pth):
+def get_custom_loader(batch_size):
     """
     This demo uses the dummy dataset inside of the folder "demo_dataset".
     It is structured just like a real dataset would need to be structured.
@@ -45,12 +45,6 @@ def get_custom_loader(batch_size, load_saved_pth):
     # videos_root = f'{os.getcwd()}/../../processed_frames_dataset'
     # os.path.join(videos_root, 'annotations.txt')
     # annotation_file = f'{os.getcwd()}/../../processed_frames_dataset/annotations.txt'
-
-    if load_saved_pth:
-        try:
-            return torch.load("data/HandJutsu.pth")
-        except:
-            pass
 
     # Folder format:
     # base_dir = data
@@ -70,18 +64,18 @@ def get_custom_loader(batch_size, load_saved_pth):
         test_mode=True,
     )
 
-    torch.save(dataset, "data/HandJutsu.pth")
+    train_size = int(0.8 * len(dataset))
+    test_size = len(dataset) - train_size
+    train_dataset, test_dataset = torch.utils.data.random_split(dataset, [train_size, test_size])
 
-    ##TODO: split dataloader into train and test
-    # train_size = int(0.8 * len(dataset))
-    # test_size = len(dataset) - train_size
-    # train_dataset, test_dataset = torch.utils.data.random_split(dataset, [train_size, test_size])
-
-    data_loader = DataLoader(
-        dataset, batch_size=batch_size, shuffle=True, num_workers=1
+    train_data_loader = DataLoader(
+        train_dataset, batch_size=batch_size, shuffle=True, num_workers=1
+    )
+    test_data_loader = DataLoader(
+        test_dataset, batch_size=batch_size, shuffle=True, num_workers=1
     )
 
-    return data_loader
+    return train_data_loader, test_data_loader
 
     # print(dataset)
     # import random
