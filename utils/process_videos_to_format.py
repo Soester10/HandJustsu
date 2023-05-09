@@ -49,9 +49,13 @@ def get_frames(word, video, data_folder):
 def resize_and_output(word, video, frames, output_folder, output_size=(200, 200)):
     for index, image in enumerate(frames):
         im = Image.fromarray(cv2.cvtColor(image, cv2.COLOR_BGR2RGB)).resize(
-            output_size, Image.ANTIALIAS)
-        im.save(os.path.join(output_folder, word, video, f'img_{index:03d}.jpg'),
-                "JPEG", quality=90)
+            output_size, Image.ANTIALIAS
+        )
+        im.save(
+            os.path.join(output_folder, word, video, f"img_{index:03d}.jpg"),
+            "JPEG",
+            quality=90,
+        )
 
 
 def convert_known_videos_to_frames(data_folder: str = "sample_test_data"):

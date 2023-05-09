@@ -9,6 +9,7 @@ from .custom_dataloader.dataloader_main import get_custom_loader
 def test(net, path_to_videos: str, device, known=True):
     net.eval()
 
+    correct = 0
     predicted_classes = {}
     classes = open("utils/labels/label_to_word.json")
     classes = json.load(classes)
@@ -34,13 +35,18 @@ def test(net, path_to_videos: str, device, known=True):
             _, predicted = output.max(1)
 
             predicted = predicted.item()
-            # TEST
-            target_ = target_.item()
-            target_ = classes[str(target_)]
-
             class_ = classes[str(predicted)]
+            
+            # TEST
+            if known:
+                target_ = target_.item()
+                target_ = classes[str(target_)]
 
-            ##TODO: change batch_idx to record.path
-            predicted_classes[batch_idx] = (class_, target_)
+                predicted_classes[batch_idx] = (class_, target_)
+                correct = (correct*(batch_idx)+1)/(batch_idx+1) if class_ == target_ else (correct*(batch_idx))/(batch_idx+1)
 
-    return predicted_classes
+            else:
+                ##TODO: change batch_idx to record.path
+                predicted_classes[batch_idx] = class_
+
+    return predicted_classes, correct*100

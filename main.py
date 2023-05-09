@@ -44,6 +44,7 @@ def main(
     batch_size,
     optimal_batch_size=8,
     load_from_ckpt=False,
+    labeled_test=True,
 ):
     device = "cuda" if torch.cuda.is_available() else "cpu"
     net = model
@@ -150,9 +151,11 @@ def custom_tester(path_to_videos):
         return
     net.load_state_dict(checkpoint["net"])
 
-    predicted_classes = custom_test.test(net, path_to_videos, device, known=True)
+    predicted_classes, correct = custom_test.test(net, path_to_videos, device, known=labeled_test)
 
     print(predicted_classes)
+    if labeled_test:
+        print(f"Accuracy => {correct}%")
 
 
 # define hyperparameters
@@ -190,6 +193,7 @@ load_from_ckpt = True
 ## Custom Test
 custom_test_ = True
 path_to_videos = "test_data/sample_test_data"  # path to video/s
+labeled_test = True
 
 # execute main
 if __name__ == "__main__":
@@ -212,4 +216,5 @@ if __name__ == "__main__":
         batch_size,
         optimal_batch_size,
         load_from_ckpt,
+        labeled_test,
     )
