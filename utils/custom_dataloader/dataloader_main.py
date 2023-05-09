@@ -29,7 +29,12 @@ def plot_video(rows, cols, frame_list, plot_width, plot_height, title: str):
     fig.savefig("hello.png")
 
 
-def get_custom_loader(batch_size, annotations_file="annotations200.txt"):
+def get_custom_loader(
+    batch_size,
+    annotations_file: str = "annotations200.txt",
+    videos_root: str = "data",
+    get_only_test: bool = False,
+):
     """
     This demo uses the dummy dataset inside of the folder "demo_dataset".
     It is structured just like a real dataset would need to be structured.
@@ -50,8 +55,8 @@ def get_custom_loader(batch_size, annotations_file="annotations200.txt"):
     # base_dir = data
     # data/annotations.txt
     # data/<word: hello, books, etc.>/<id>/<frames>
-    videos_root = "data"
-    annotation_file = "data/{annotations_file}"
+
+    annotation_file = f"{videos_root}/{annotations_file}"
 
     """ DEMO 1 WITHOUT IMAGE TRANSFORMS """
     dataset = VideoFrameDataset(
@@ -63,6 +68,12 @@ def get_custom_loader(batch_size, annotations_file="annotations200.txt"):
         transform=ImglistToTensor(),
         test_mode=True,
     )
+
+    if get_only_test:
+        data_loader = DataLoader(
+            dataset, batch_size=batch_size, shuffle=True, num_workers=1
+        )
+        return data_loader
 
     train_size = int(0.8 * len(dataset))
     test_size = len(dataset) - train_size

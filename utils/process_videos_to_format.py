@@ -54,14 +54,13 @@ def resize_and_output(word, video, frames, output_folder, output_size=(200, 200)
                 "JPEG", quality=90)
 
 
-def convert_videos_to_frames():
+def convert_known_videos_to_frames(data_folder: str = "sample_test_data"):
     # dirname = os.path.dirname(__file__)
     # data_folder = os.path.join(dirname, "../sample_test_data")
     # output_folder = os.path.join(dirname, "../processed_sample_data")
     # label_json_path = os.path.join(dirname, "./labels")
 
-    data_folder = "sample_test_data"
-    output_folder = "sample_test_data/processed_data"
+    output_folder = f"{data_folder}/processed_data"
     label_json_path = "./labels"
     MIN_FRAMES = 40
 

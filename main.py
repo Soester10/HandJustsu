@@ -135,7 +135,7 @@ def main(
         return train_accs, test_accs
 
 
-def custom_tester(input_):
+def custom_tester(path_to_videos):
     device = "cuda" if torch.cuda.is_available() else "cpu"
     net = model
     net = net.to(device)
@@ -150,7 +150,9 @@ def custom_tester(input_):
         return
     net.load_state_dict(checkpoint["net"])
 
-    class_ = custom_test.test(net, input_, device)
+    predicted_classes = custom_test.test(net, path_to_videos, device, known=True)
+
+    print(predicted_classes)
 
 
 # define hyperparameters
@@ -187,12 +189,12 @@ load_from_ckpt = True
 
 ## Custom Test
 custom_test_ = True
-input_ = "sample_test_data/adult/01206.mp4"  # path to video
+path_to_videos = "sample_test_data"  # path to video/s
 
 # execute main
 if __name__ == "__main__":
     if custom_test:
-        custom_tester(input_)
+        custom_tester(path_to_videos)
         sys.exit(0)
     main(
         criterion,
