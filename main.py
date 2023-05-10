@@ -67,8 +67,6 @@ def main(
         train_accs = checkpoint["train_accs"]
         test_accs = checkpoint["test_accs"]
 
-        print(len(train_accs), train_accs)
-
     optimizer = optimizers.choose_optimizer(optimizer_, net, lr, momentum, weight_decay)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=200)
 
@@ -172,12 +170,35 @@ def custom_tester(path_to_videos):
         print(f"Accuracy => {correct}%")
 
 
+## CL Arguments
+parser = argparse.ArgumentParser(description="HandJutsu")
+# testing
+parser.add_argument(
+    "--test_data_path",
+    default="./test_data/sample_test_data",
+    type=str,
+    help="test data path",
+)
+parser.add_argument("--test", action="store_true", help="to test the model")
+parser.add_argument(
+    "--unlabeled_test",
+    action="store_true",
+    help="to know the dataset is labeled or unlabeled",
+)
+# training
+parser.add_argument("--epochs", default=100, type=int, help="number of training epochs")
+parser.add_argument(
+    "--scratch", action="store_true", help="trains from scratch without ckpt"
+)
+args = parser.parse_args()
+
+
 # define hyperparameters
 batch_size = 32
 optimal_batch_size = 8
 train_mul = True
 optimizer_ = "adadelta"
-epochs = 100
+epochs = args.epochs
 lr = 0.1
 momentum = 0.9
 weight_decay = 5e-4
@@ -201,13 +222,13 @@ trainloader, testloader = dataloader_main.get_custom_loader(
 )
 print(len(trainloader), len(testloader))
 
-load_from_ckpt = True
+load_from_ckpt = not (args.scratch)
 
 
 ## Custom Test
-custom_test_ = False
-path_to_videos = "test_data/sample_test_data"  # path to video/s
-labeled_test = True
+custom_test_ = args.test
+path_to_videos = args.test_data_path  # path to video/s
+labeled_test = not (args.unlabeled_test)
 
 # execute main
 if __name__ == "__main__":
