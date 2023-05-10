@@ -133,7 +133,7 @@ def main(
             best_acc = max(best_acc, test_acc)
 
     print("\n\nBest Test Accuracy:", best_acc)
-    
+
     print("Saving Final Weights...")
     state = {
         "net": net.state_dict(),
@@ -143,7 +143,7 @@ def main(
         "test_accs": test_accs,
     }
     torch.save(state, "checkpoint/ckpt_final.pth")
-    
+
     if ret_polt_values:
         return train_accs, test_accs
 
