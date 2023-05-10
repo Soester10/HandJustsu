@@ -41,7 +41,6 @@ def test(net, path_to_videos: str, device, known=True):
 
             video_path_ = os.path.split(video_path[0])[1]
 
-            # TEST
             if known:
                 target_ = target_.item()
                 target_ = classes[str(target_)]

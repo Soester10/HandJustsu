@@ -173,13 +173,13 @@ def custom_tester(path_to_videos):
 ## CL Arguments
 parser = argparse.ArgumentParser(description="HandJutsu")
 # testing
+parser.add_argument("--test", action="store_true", help="to test the model")
 parser.add_argument(
     "--test_data_path",
     default="./test_data/sample_test_data",
     type=str,
     help="test data path",
 )
-parser.add_argument("--test", action="store_true", help="to test the model")
 parser.add_argument(
     "--unlabeled_test",
     action="store_true",
