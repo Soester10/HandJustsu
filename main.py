@@ -63,9 +63,11 @@ def main(
         checkpoint = torch.load("checkpoint/ckpt.pth")
         net.load_state_dict(checkpoint["net"])
         best_acc = checkpoint["best_acc"]
-        start_epoch = checkpoint["epoch"]
+        start_epoch = checkpoint["epoch"] + 1
         train_accs = checkpoint["train_accs"]
         test_accs = checkpoint["test_accs"]
+
+        print(len(train_accs), train_accs)
 
     optimizer = optimizers.choose_optimizer(optimizer_, net, lr, momentum, weight_decay)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=200)
@@ -116,7 +118,7 @@ def main(
         train_accs.append(train_acc)
         test_accs.append(test_acc)
 
-        if (epoch + 1) % 10 == 0 and best_acc <= test_acc and save_weights:
+        if best_acc <= test_acc and save_weights:
             print("Saving Weights...")
             state = {
                 "net": net.state_dict(),
@@ -131,7 +133,17 @@ def main(
             best_acc = max(best_acc, test_acc)
 
     print("\n\nBest Test Accuracy:", best_acc)
-
+    
+    print("Saving Final Weights...")
+    state = {
+        "net": net.state_dict(),
+        "best_acc": best_acc,
+        "epoch": epoch,
+        "train_accs": train_accs,
+        "test_accs": test_accs,
+    }
+    torch.save(state, "checkpoint/ckpt_final.pth")
+    
     if ret_polt_values:
         return train_accs, test_accs
 
@@ -193,7 +205,7 @@ load_from_ckpt = True
 
 
 ## Custom Test
-custom_test_ = True
+custom_test_ = False
 path_to_videos = "test_data/sample_test_data"  # path to video/s
 labeled_test = True
 
