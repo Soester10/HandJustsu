@@ -274,8 +274,7 @@ class VideoFrameDataset(torch.utils.data.Dataset):
         if self.transform is not None:
             images = self.transform(images)
 
-        ##TODO: add record.path here to return
-        return images, record.label
+        return images, record.label, record.path
 
     def __len__(self):
         return len(self.video_list)

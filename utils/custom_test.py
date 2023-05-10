@@ -28,7 +28,9 @@ def test(net, path_to_videos: str, device, known=True):
         # else:
         # convert_unkonwn_videos_to_frames(path_to_videos)
 
-        for batch_idx, (input_, target_) in tqdm(enumerate(custom_testloader)):
+        for batch_idx, (input_, target_, video_path) in tqdm(
+            enumerate(custom_testloader)
+        ):
             input_ = input_.permute(0, 2, 1, 3, 4)
             input_ = input_.to(device)
             output = net(input_)
@@ -37,12 +39,14 @@ def test(net, path_to_videos: str, device, known=True):
             predicted = predicted.item()
             class_ = classes[str(predicted)]
 
+            video_path_ = os.path.split(video_path[0])[1]
+
             # TEST
             if known:
                 target_ = target_.item()
                 target_ = classes[str(target_)]
 
-                predicted_classes[batch_idx] = (class_, target_)
+                predicted_classes[video_path_] = (class_, target_)
                 correct = (
                     (correct * (batch_idx) + 1) / (batch_idx + 1)
                     if class_ == target_
@@ -50,7 +54,6 @@ def test(net, path_to_videos: str, device, known=True):
                 )
 
             else:
-                ##TODO: change batch_idx to record.path
-                predicted_classes[batch_idx] = class_
+                predicted_classes[video_path_] = class_
 
     return predicted_classes, correct * 100

@@ -7,7 +7,7 @@ def train(epoch, optimizer, net, best_train_acc, criterion, trainloader, device)
     correct = 0
     total = 0
 
-    for batch_idx, (inputs, targets) in tqdm(enumerate(trainloader)):
+    for batch_idx, (inputs, targets, video_path) in tqdm(enumerate(trainloader)):
         inputs = inputs.permute(0, 2, 1, 3, 4)
         inputs, targets = inputs.to(device), targets.to(device)
         optimizer.zero_grad()
@@ -44,7 +44,7 @@ def train_mul(
     total = 0
     count = 0
 
-    for batch_idx, (inputs, targets) in tqdm(enumerate(trainloader)):
+    for batch_idx, (inputs, targets, video_path) in tqdm(enumerate(trainloader)):
         inputs = inputs.permute(0, 2, 1, 3, 4)
         inputs, targets = inputs.to(device), targets.to(device)
 

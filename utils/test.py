@@ -10,7 +10,7 @@ def test(epoch, optimizer, net, best_acc, criterion, testloader, device):
     total = 0
 
     with torch.no_grad():
-        for batch_idx, (inputs, targets) in tqdm(enumerate(testloader)):
+        for batch_idx, (inputs, targets, video_path) in tqdm(enumerate(testloader)):
             inputs = inputs.permute(0, 2, 1, 3, 4)
             inputs, targets = inputs.to(device), targets.to(device)
             outputs = net(inputs)
