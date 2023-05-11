@@ -65,7 +65,13 @@ def get_custom_loader(
         num_segments=40,
         frames_per_segment=1,
         imagefile_template="img_{:03d}.jpg",
-        transform=ImglistToTensor(),
+        transform=[ImglistToTensor()]
+        if get_only_test
+        else [
+            ImglistToTensor(),
+            # transforms.RandomGrayscale(p=0.35),
+            # transforms.RandomInvert(p=0.5),
+        ],
         test_mode=True,
     )
 

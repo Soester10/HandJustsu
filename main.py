@@ -60,7 +60,7 @@ def main(
     test_accs = []
 
     if load_from_ckpt:
-        checkpoint = torch.load("checkpoint/ckpt.pth")
+        checkpoint = torch.load("checkpoint/ckpt_final.pth")
         net.load_state_dict(checkpoint["net"])
         best_acc = checkpoint["best_acc"]
         start_epoch = checkpoint["epoch"] + 1
@@ -130,17 +130,17 @@ def main(
             torch.save(state, "checkpoint/ckpt.pth")
             best_acc = max(best_acc, test_acc)
 
-    print("\n\nBest Test Accuracy:", best_acc)
+        print("Saving Final Weights...")
+        state = {
+            "net": net.state_dict(),
+            "best_acc": best_acc,
+            "epoch": epoch,
+            "train_accs": train_accs,
+            "test_accs": test_accs,
+        }
+        torch.save(state, "checkpoint/ckpt_final.pth")
 
-    print("Saving Final Weights...")
-    state = {
-        "net": net.state_dict(),
-        "best_acc": best_acc,
-        "epoch": epoch,
-        "train_accs": train_accs,
-        "test_accs": test_accs,
-    }
-    torch.save(state, "checkpoint/ckpt_final.pth")
+    print("\n\nBest Test Accuracy:", best_acc)
 
     if ret_polt_values:
         return train_accs, test_accs

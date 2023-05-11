@@ -272,7 +272,8 @@ class VideoFrameDataset(torch.utils.data.Dataset):
                     frame_index += 1
 
         if self.transform is not None:
-            images = self.transform(images)
+            for transform_ in self.transform:
+                images = transform_(images)
 
         return images, record.label, record.path
 
