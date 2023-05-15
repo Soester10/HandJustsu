@@ -36,23 +36,11 @@ $ python -m pip install -r requirements.txt
 ├── data (example)
 │   └── hello
 │       └── 01217.mp4
-├── test_data
+├── test_data (example)
 │   └── sample_test_data
 │       ├── careful
-│       │   ├── 09179.mp4
-│       │   ├── 09180.mp4
-│       │   ├── 09181.mp4
-│       │   ├── 09182.mp4
-│       │   ├── 09185.mp4
-│       │   ├── 09186.mp4
 │       │   └── 09188.mp4
 │       └── order
-│           ├── 40169.mp4
-│           ├── 40171.mp4
-│           ├── 40172.mp4
-│           ├── 40177.mp4
-│           ├── 40178.mp4
-│           ├── 40179.mp4
 │           └── 40183.mp4
 └── utils
     ├── HandJutsu.pth
