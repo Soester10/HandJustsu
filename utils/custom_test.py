@@ -2,7 +2,10 @@ import torch
 import os
 from tqdm import tqdm
 import json
-from .process_videos_to_format import convert_known_videos_to_frames
+from .process_videos_to_format import (
+    convert_known_videos_to_frames,
+    convert_unknown_videos_to_frames,
+)
 from .custom_dataloader.dataloader_main import get_custom_loader
 
 
@@ -17,16 +20,16 @@ def test(net, path_to_videos: str, device, known=True):
     with torch.no_grad():
         if known:
             convert_known_videos_to_frames(path_to_videos)
-            custom_testloader = get_custom_loader(
-                batch_size=1,
-                annotations_file="annotations.txt",
-                videos_root=f"{path_to_videos}/../processed_data",
-                get_only_test=True,
-            )
 
-        ##TODO
-        # else:
-        # convert_unkonwn_videos_to_frames(path_to_videos)
+        else:
+            convert_unknown_videos_to_frames(path_to_videos)
+
+        custom_testloader = get_custom_loader(
+            batch_size=1,
+            annotations_file="annotations.txt",
+            videos_root=f"{path_to_videos}/../processed_data",
+            get_only_test=True,
+        )
 
         for batch_idx, (input_, target_, video_path) in tqdm(
             enumerate(custom_testloader)

@@ -59,11 +59,38 @@ def resize_and_output(word, video, frames, output_folder, output_size=(200, 200)
 
 
 def convert_known_videos_to_frames(data_folder: str = "sample_test_data"):
-    # dirname = os.path.dirname(__file__)
-    # data_folder = os.path.join(dirname, "../sample_test_data")
-    # output_folder = os.path.join(dirname, "../processed_sample_data")
-    # label_json_path = os.path.join(dirname, "./labels")
+    output_folder = f"{data_folder}/../processed_data"
+    label_json_path = "utils/labels"
+    MIN_FRAMES = 40
 
+    words = os.listdir(data_folder)
+    create_folder(output_folder)
+    # iterate through every word
+    for word in words:
+        # create folder for word
+        create_folder(os.path.join(output_folder, word))
+        # iterate through every video for each word
+        videos = os.listdir(os.path.join(data_folder, word))
+        for video in videos:
+            log(f"Processing {word}/{video}")
+
+            video_id = video.split(".")[0]  # remove extension
+            # create folder for individual video
+            create_folder(os.path.join(output_folder, word, video_id))
+            # generate frames
+            frames = get_frames(word, video, data_folder)
+            # duplicate frames if you have less than MIN_FRAMES frames
+            while len(frames) <= MIN_FRAMES:
+                frames = double_frames(frames)
+
+            # save each frame in the folder as a 200x200 image
+            resize_and_output(word, video_id, frames, output_folder)
+
+    # specify file name without extension for annotations
+    generate_annotations("annotations", label_json_path, output_folder)
+
+
+def convert_unknown_videos_to_frames(data_folder: str = "sample_test_data"):
     output_folder = f"{data_folder}/../processed_data"
     label_json_path = "utils/labels"
     MIN_FRAMES = 40

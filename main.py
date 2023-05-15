@@ -205,17 +205,14 @@ weight_decay = 5e-4
 save_weights = True
 ret_polt_values = True
 criterion = nn.CrossEntropyLoss()
-## For CIFAR10
-# trainloader, testloader = dataloader.dataloader(
-#     optimal_batch_size if train_mul else batch_size
-# )
+
 model = VisionTransformer.vivit_model1(
     image_size=200,
     frames=40,
     num_classes=2000,
 )
 
-## For WLASL
+## WLASL data loader
 trainloader, testloader = dataloader_main.get_custom_loader(
     optimal_batch_size if train_mul else batch_size,
     annotations_file="annotations200.txt",
