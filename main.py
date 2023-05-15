@@ -146,7 +146,7 @@ def main(
         return train_accs, test_accs
 
 
-def custom_tester(path_to_videos):
+def custom_tester(model, path_to_videos, labeled_test):
     device = "cuda" if torch.cuda.is_available() else "cpu"
     net = model
     net = net.to(device)
@@ -168,6 +168,21 @@ def custom_tester(path_to_videos):
     print(predicted_classes)
     if labeled_test:
         print(f"Accuracy => {correct}%")
+
+    if not os.path.isdir("output"):
+        os.mkdir("output")
+
+    with open("output/output.txt", "w") as f:
+        for path_ in predicted_classes:
+            to_write: str = (
+                str(path_)
+                + "=> predicted: "
+                + str(predicted_classes[path_][0])
+                + " real: "
+                + str(predicted_classes[path_][1])
+                + "\n"
+            )
+            f.write(to_write)
 
 
 ## CL Arguments
@@ -194,16 +209,16 @@ args = parser.parse_args()
 
 
 # define hyperparameters
-batch_size = 32
-optimal_batch_size = 8
-train_mul = True
-optimizer_ = "adadelta"
-epochs = args.epochs
-lr = 0.1
-momentum = 0.9
-weight_decay = 5e-4
-save_weights = True
-ret_polt_values = True
+batch_size: int = 32
+optimal_batch_size: int = 8
+train_mul: bool = True
+optimizer_: str = "adadelta"
+epochs: int = args.epochs
+lr: float = 0.1
+momentum: float = 0.9
+weight_decay: float = 5e-4
+save_weights: bool = True
+ret_polt_values: bool = True
 criterion = nn.CrossEntropyLoss()
 
 model = VisionTransformer.vivit_model1(
@@ -219,18 +234,18 @@ trainloader, testloader = dataloader_main.get_custom_loader(
 )
 print(len(trainloader), len(testloader))
 
-load_from_ckpt = not (args.scratch)
+load_from_ckpt: bool = not (args.scratch)
 
 
 ## Custom Test
-custom_test_ = args.test
-path_to_videos = args.test_data_path  # path to video/s
-labeled_test = not (args.unlabeled_test)
+custom_test_: bool = args.test
+path_to_videos: str = args.test_data_path  # path to video/s
+labeled_test: bool = not (args.unlabeled_test)
 
 # execute main
 if __name__ == "__main__":
     if custom_test_:
-        custom_tester(path_to_videos)
+        custom_tester(model, path_to_videos, labeled_test)
         sys.exit(0)
     main(
         criterion,

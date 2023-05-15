@@ -88,3 +88,10 @@ $ python main.py
 | --unlabeled_test | to know determine the data structure, words/videos or videos | bool: False |
 | --epochs | number of epochs for training | int: 100 |
 | --scratch | trains from scratch without checkpoint | bool: False |
+
+
+## Output
+Outputs written to
+```
+output/output.txt
+```

@@ -12,10 +12,10 @@ from .custom_dataloader.dataloader_main import get_custom_loader
 def test(net, path_to_videos: str, device, known=True):
     net.eval()
 
-    correct = 0
-    predicted_classes = {}
+    correct: int = 0
+    predicted_classes: dict = {}
     classes = open("utils/labels/label_to_word.json")
-    classes = json.load(classes)
+    classes: json = json.load(classes)
 
     with torch.no_grad():
         if known:
@@ -56,6 +56,6 @@ def test(net, path_to_videos: str, device, known=True):
                 )
 
             else:
-                predicted_classes[video_path_] = class_
+                predicted_classes[video_path_] = (class_, "unknown")
 
     return predicted_classes, correct * 100
