@@ -9,7 +9,7 @@ from .process_videos_to_format import (
 from .custom_dataloader.dataloader_main import get_custom_loader
 
 
-def test(net, path_to_videos: str, device, known=True):
+def test(net, path_to_videos: str, device, known: bool = True):
     net.eval()
 
     correct: int = 0

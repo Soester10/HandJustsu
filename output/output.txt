@@ -1,0 +1,14 @@
+09179=> predicted: careful | real: careful
+40183=> predicted: order | real: order
+09188=> predicted: careful | real: careful
+09180=> predicted: thanksgiving | real: careful
+40172=> predicted: order | real: order
+40177=> predicted: order | real: order
+09181=> predicted: careful | real: careful
+09186=> predicted: careful | real: careful
+40178=> predicted: order | real: order
+09182=> predicted: careful | real: careful
+40169=> predicted: order | real: order
+40171=> predicted: order | real: order
+40179=> predicted: order | real: order
+09185=> predicted: careful | real: careful

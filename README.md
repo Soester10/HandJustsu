@@ -42,6 +42,10 @@ $ python -m pip install -r requirements.txt
 │       │   └── 09188.mp4
 │       └── order
 │           └── 40183.mp4
+├── output
+│   └── output.txt
+├── checkpoint
+│   └── ckpt.pth
 └── utils
     ├── HandJutsu.pth
     ├── custom_dataloader

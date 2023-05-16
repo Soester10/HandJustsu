@@ -58,14 +58,18 @@ def main(
     best_acc = 0
     train_accs = []
     test_accs = []
+    train_losses = []
+    test_losses = []
 
-    if load_from_ckpt:
-        checkpoint = torch.load("checkpoint/ckpt_final.pth")
+    if load_from_ckpt and os.path.isfile("checkpoint/ckpt.pth"):
+        checkpoint = torch.load("checkpoint/ckpt.pth")
         net.load_state_dict(checkpoint["net"])
         best_acc = checkpoint["best_acc"]
         start_epoch = checkpoint["epoch"] + 1
         train_accs = checkpoint["train_accs"]
         test_accs = checkpoint["test_accs"]
+        train_losses = checkpoint["train_losses"]
+        test_losses = checkpoint["test_losses"]
 
     optimizer = optimizers.choose_optimizer(optimizer_, net, lr, momentum, weight_decay)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=200)
@@ -115,20 +119,24 @@ def main(
 
         train_accs.append(train_acc)
         test_accs.append(test_acc)
+        train_losses.append(train_loss)
+        test_losses.append(test_loss)
 
         if best_acc <= test_acc and save_weights:
             print("Saving Weights...")
+            best_acc = max(best_acc, test_acc)
             state = {
                 "net": net.state_dict(),
                 "best_acc": best_acc,
                 "epoch": epoch,
                 "train_accs": train_accs,
                 "test_accs": test_accs,
+                "train_losses": train_losses,
+                "test_losses": test_losses,
             }
             if not os.path.isdir("checkpoint"):
                 os.mkdir("checkpoint")
             torch.save(state, "checkpoint/ckpt.pth")
-            best_acc = max(best_acc, test_acc)
 
         print("Saving Final Weights...")
         state = {
@@ -137,6 +145,8 @@ def main(
             "epoch": epoch,
             "train_accs": train_accs,
             "test_accs": test_accs,
+            "train_losses": train_losses,
+            "test_losses": test_losses,
         }
         torch.save(state, "checkpoint/ckpt_final.pth")
 
@@ -178,7 +188,7 @@ def custom_tester(model, path_to_videos, labeled_test):
                 str(path_)
                 + "=> predicted: "
                 + str(predicted_classes[path_][0])
-                + " real: "
+                + " | real: "
                 + str(predicted_classes[path_][1])
                 + "\n"
             )
