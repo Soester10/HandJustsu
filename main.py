@@ -17,6 +17,7 @@ from torchsummary import summary
 # custom imports
 from utils import train, test, optimizers, dataloader, custom_test
 from utils.custom_dataloader import custom_dataloader, dataloader_main
+from utils.graph_plotters.metrics_plotter import plot_acc, plot_loss
 from models import VisionTransformer
 
 ##to resolve 'ssl certificate verify failed' issue
@@ -45,6 +46,7 @@ def main(
     optimal_batch_size=8,
     load_from_ckpt=False,
     labeled_test=True,
+    plot_result=False,
 ):
     """
 
@@ -160,6 +162,10 @@ def main(
 
     print("\n\nBest Test Accuracy:", best_acc)
 
+    if plot_result:
+        plot_acc(train_accs, test_accs, epoch)
+        plot_loss(train_losses, test_losses, epoch)
+
     if ret_polt_values:
         return train_accs, test_accs
 
@@ -244,13 +250,19 @@ parser.add_argument(
     action="store_true",
     help="to use batch multiplier for training",
 )
+# plot
+parser.add_argument(
+    "--plot_result",
+    action="store_true",
+    help="to plot the train and test accuracies and losses",
+)
 args = parser.parse_args()
 
 # define hyperparameters
 batch_size: int = args.batch_size
 optimal_batch_size: int = args.optimal_batch_size
 train_mul: bool = not (args.no_batch_mul)
-if batch_size >= optimal_batch_size:
+if batch_size <= optimal_batch_size:
     train_mul = False
 optimizer_: str = args.optimizer
 epochs: int = args.epochs
@@ -282,6 +294,9 @@ custom_test_: bool = args.test
 path_to_videos: str = args.test_data_path  # path to video/s
 labeled_test: bool = not (args.unlabeled_test)
 
+# Ploting
+plot_result = args.plot_result
+
 # execute main
 if __name__ == "__main__":
     if custom_test_:
@@ -304,4 +319,5 @@ if __name__ == "__main__":
         optimal_batch_size,
         load_from_ckpt,
         labeled_test,
+        plot_result,
     )

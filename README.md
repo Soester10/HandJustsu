@@ -88,6 +88,7 @@ $ python main.py
 | --batch_size | batch size to be trained with | int: 32 |
 | --optimal_batch_size | optimal batch size supported by hardware | int: 8 |
 | --no_batch_mul | if a batch multiplier need not be used, bacth mul used by default | bool: False |
+| --plot_result | to plot test and train accuracies and losses | bool: False |
 
 
 ## Output
