@@ -51,6 +51,9 @@ $ python -m pip install -r requirements.txt
     ├── custom_dataloader
     │   ├── custom_dataloader.py
     │   └── dataloader_main.py
+    ├── graph_plotters
+    │   ├── frames_plotters.py
+    │   └── metrics_plotters.py
     ├── custom_test.py
     ├── dataloader.py
     ├── dataset_parser
@@ -80,6 +83,11 @@ $ python main.py
 | --unlabeled_test | to know determine the data structure, words/videos or videos | bool: False |
 | --epochs | number of epochs for training | int: 100 |
 | --scratch | trains from scratch without checkpoint | bool: False |
+| --optimizer | decide optimizer for training model | str: adadelta |
+| --lr | learning rate for training | float: 0.1 |
+| --batch_size | batch size to be trained with | int: 32 |
+| --optimal_batch_size | optimal batch size supported by hardware | int: 8 |
+| --no_batch_mul | if a batch multiplier need not be used, bacth mul used by default | bool: False |
 
 
 ## Output

@@ -46,6 +46,14 @@ def main(
     load_from_ckpt=False,
     labeled_test=True,
 ):
+    """
+
+    Main funtion for HandJutsu
+
+    Call:
+    python main.py
+
+    """
     device = "cuda" if torch.cuda.is_available() else "cpu"
     net = model
     net = net.to(device)
@@ -215,16 +223,31 @@ parser.add_argument("--epochs", default=100, type=int, help="number of training 
 parser.add_argument(
     "--scratch", action="store_true", help="trains from scratch without ckpt"
 )
+parser.add_argument(
+    "--optimizer",
+    default="adadelta",
+    type=str,
+    help="optimizer",
+)
+parser.add_argument("--lr", default=0.1, type=float, help="learning rate for training")
+parser.add_argument("--batch_size", default=32, type=int, help="batch size for training")
+parser.add_argument("--optimal_batch_size", default=8, type=int, help="optimal batch size for training, if training with batch multiplier")
+parser.add_argument(
+    "--no_batch_mul",
+    action="store_true",
+    help="to use batch multiplier for training",
+)
 args = parser.parse_args()
 
-
 # define hyperparameters
-batch_size: int = 32
-optimal_batch_size: int = 8
-train_mul: bool = True
-optimizer_: str = "adadelta"
+batch_size: int = args.batch_size
+optimal_batch_size: int = args.optimal_batch_size
+train_mul: bool = not(args.no_batch_mul)
+if batch_size >= optimal_batch_size:
+    train_mul = False
+optimizer_: str = args.optimizer
 epochs: int = args.epochs
-lr: float = 0.1
+lr: float = args.lr
 momentum: float = 0.9
 weight_decay: float = 5e-4
 save_weights: bool = True

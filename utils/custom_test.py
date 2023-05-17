@@ -10,6 +10,14 @@ from .custom_dataloader.dataloader_main import get_custom_loader
 
 
 def test(net, path_to_videos: str, device, known: bool = True):
+    """
+
+    To test performance of model with unseen data
+
+    Call:
+    python main.py --test --test_data <data location>
+
+    """
     net.eval()
 
     correct: int = 0

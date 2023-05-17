@@ -3,8 +3,7 @@ import torchvision
 import torchvision.transforms as transforms
 
 
-##test with CIFAR10
-##TODO: need to change to custom data
+##test loader with CIFAR10 for image classification
 def dataloader(batch_size):
     data_path = "./data"
     num_workers = 2
