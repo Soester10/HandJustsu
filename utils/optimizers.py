@@ -1,5 +1,6 @@
 import torch.optim as optim
 
+
 ## optimizer options for users to choose from for training
 def choose_optimizer(optimizer_, net, lr=0.1, momentum=0.9, weight_decay=5e-4):
     optimizers = {

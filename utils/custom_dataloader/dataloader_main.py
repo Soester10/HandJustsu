@@ -39,11 +39,11 @@ def get_custom_loader(
     # data/<word: hello, books, etc.>/<id>/<frames>
 
 
-    The frame index range [START_FRAME, END_FRAME] is divided into 
-    NUM_SEGMENTS even segments. From each segment, a random start-index 
-    is sampled from which FRAMES_PER_SEGMENT consecutive indices are loaded. 
-    This results in NUM_SEGMENTS*FRAMES_PER_SEGMENT chosen indices, whose 
-    frames are loaded as PIL images and put into a list and returned when 
+    The frame index range [START_FRAME, END_FRAME] is divided into
+    NUM_SEGMENTS even segments. From each segment, a random start-index
+    is sampled from which FRAMES_PER_SEGMENT consecutive indices are loaded.
+    This results in NUM_SEGMENTS*FRAMES_PER_SEGMENT chosen indices, whose
+    frames are loaded as PIL images and put into a list and returned when
     calling dataset[i].
 
     If you do not want to use sparse temporal sampling, and instead
@@ -57,7 +57,7 @@ def get_custom_loader(
     transformations on the batch identically on all images of the batch. Any torchvision
     transform for image augmentation can thus also be used  for video augmentation.
 
-    In case a different types of transforms are applied, you can pass them as a list 
+    In case a different types of transforms are applied, you can pass them as a list
     to the 'transforms' parameter
 
 

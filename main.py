@@ -230,8 +230,15 @@ parser.add_argument(
     help="optimizer",
 )
 parser.add_argument("--lr", default=0.1, type=float, help="learning rate for training")
-parser.add_argument("--batch_size", default=32, type=int, help="batch size for training")
-parser.add_argument("--optimal_batch_size", default=8, type=int, help="optimal batch size for training, if training with batch multiplier")
+parser.add_argument(
+    "--batch_size", default=32, type=int, help="batch size for training"
+)
+parser.add_argument(
+    "--optimal_batch_size",
+    default=8,
+    type=int,
+    help="optimal batch size for training, if training with batch multiplier",
+)
 parser.add_argument(
     "--no_batch_mul",
     action="store_true",
@@ -242,7 +249,7 @@ args = parser.parse_args()
 # define hyperparameters
 batch_size: int = args.batch_size
 optimal_batch_size: int = args.optimal_batch_size
-train_mul: bool = not(args.no_batch_mul)
+train_mul: bool = not (args.no_batch_mul)
 if batch_size >= optimal_batch_size:
     train_mul = False
 optimizer_: str = args.optimizer

@@ -1,5 +1,6 @@
 from tqdm import tqdm
 
+
 ## train function for model training with regular batch size
 def train(epoch, optimizer, net, best_train_acc, criterion, trainloader, device):
     net.train()
@@ -8,7 +9,7 @@ def train(epoch, optimizer, net, best_train_acc, criterion, trainloader, device)
     total = 0
 
     for batch_idx, (inputs, targets, video_path) in tqdm(enumerate(trainloader)):
-        #permutating input wrt model input requirement
+        # permutating input wrt model input requirement
         inputs = inputs.permute(0, 2, 1, 3, 4)
         inputs, targets = inputs.to(device), targets.to(device)
         optimizer.zero_grad()
@@ -23,11 +24,12 @@ def train(epoch, optimizer, net, best_train_acc, criterion, trainloader, device)
         correct += predicted.eq(targets).sum().item()
         print("train:", train_loss / (batch_idx + 1), correct / total, end="\r")
 
-    #calculating test accuracy
+    # calculating test accuracy
     if best_train_acc < 100.0 * correct / total:
         best_train_acc = 100.0 * correct / total
 
     return 100.0 * correct / total, train_loss / (batch_idx + 1), best_train_acc
+
 
 ## train function for model training with regular batch size
 def train_mul(
@@ -41,7 +43,7 @@ def train_mul(
     batch_multiplier,
 ):
     """
-    
+
     Batch Multiplier allows users with limited GPU VRAM
     to train with larger batch size.
 
