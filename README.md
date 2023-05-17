@@ -99,5 +99,6 @@ output/output.txt
 
 ## Note
 > - Dataset has not been uploaded due to size limit, can be downloaded from [here](https://www.kaggle.com/datasets/risangbaskoro/wlasl-processed) <br>
-> - Download our best checkpoint from [here](https://www.kaggle.com/datasets/risangbaskoro/wlasl-processed) <br>
+> - Download our best checkpoint from [here](https://drive.google.com/file/d/1K13nwWG6DtVw4qw3GXzwSq9kfoIa-8Ku/view?usp=sharing) <br>
 > - Follow code structure for running the code and adding checkpoint <br>
+> - Check our report [here](https://drive.google.com/file/d/1RAVn4hp5txUHPJxbaL4Il94IS16Dhbku/view?usp=sharing) for model architecture and other details <br>
