@@ -77,6 +77,12 @@ def get_custom_loader(
             ImglistToTensor(),
             # transforms.RandomGrayscale(p=0.35),
             # transforms.RandomInvert(p=0.5),
+            # transforms.Compose([
+            #     ImglistToTensor(),  # list of PIL images to (FRAMES x CHANNELS x HEIGHT x WIDTH) tensor
+            #     transforms.Resize(299),  # image batch, resize smaller edge to 299
+            #     transforms.CenterCrop(299),  # image batch, center crop to square 299x299
+            #     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+            # ])
         ],
         test_mode=True,
     )
